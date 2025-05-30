@@ -4,6 +4,7 @@ import com.protim.course.dao.Course;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,15 +26,24 @@ public class CourseService {
     }
 
     public Course addCourse(Course course){
-        courseRepository.add(course);
-        return course;
+        if(courseDoesNotExists(course.courseId())){
+            courseRepository.add(course);
+            return course;
+        } else {
+            throw new KeyAlreadyExistsException("Course already exists.");
+        }
     }
 
     public Course deleteCourse(int id){
-        Course course = getById(id);
-        courseRepository = courseRepository.stream()
-                .filter(c -> c.courseId() != id).collect(Collectors.toList());
-        return course;
+        try{
+            Course course = getById(id);
+            courseRepository = courseRepository.stream()
+                    .filter(c -> c.courseId() != id).collect(Collectors.toList());
+            return course;
+        } catch(IllegalArgumentException e){
+            throw new UnsupportedOperationException("Cannot delete. Id does not exist");
+        }
+
     }
 
     public Course updateCourse(Course c){
@@ -44,5 +54,9 @@ public class CourseService {
         }
         courseRepository.add(c);
         return c;
+    }
+
+    boolean courseDoesNotExists(int courseId){
+        return courseRepository.stream().filter(c -> c.courseId() == courseId).toList().isEmpty();
     }
 }
