@@ -3,7 +3,7 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - gradlew build
+      - ./gradlew build
       - echo Logging in to Amazon ECR...
       - aws --version
       - REPOSITORY_URI=850995544882.dkr.ecr.eu-north-1.amazonaws.com/vishwaprotim
