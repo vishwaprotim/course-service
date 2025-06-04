@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: course-service
+  labels:
+    app: course-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: course-service
+  template:
+    metadata:
+      labels:
+        app: course-service
+    spec:
+      containers:
+        - name: course-service
+          image: course-service:latest
+          imagePullPolicy: Never # this is important, as it forces minikube to always use the local image
+          ports:
+            - containerPort: 8080
