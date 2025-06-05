@@ -19,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
+import java.net.Inet4Address;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.List;
 
 @Slf4j
@@ -65,6 +67,11 @@ public class CourseController {
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable int id){
         return ResponseEntity.ok(service.getById(id));
+    }
+
+    @GetMapping("/host")
+    public ResponseEntity<String> getHostName() throws UnknownHostException {
+        return ResponseEntity.ok("Hostname: " + Inet4Address.getLocalHost().getHostName() + " | Host Address: " + Inet4Address.getLocalHost().getHostAddress());
     }
 
     @Operation(summary = "Get all courses")
